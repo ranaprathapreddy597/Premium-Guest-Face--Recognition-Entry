@@ -1,0 +1,37 @@
+# Premium Guest Face-Recognition Entry System
+# Airport/Lounge #50 - Requirements
+
+# ── Core Web Framework ─────────────────────────────────────────
+flask==3.0.0
+flask-cors==4.0.0
+Flask-SQLAlchemy
+
+# ── Computer Vision ────────────────────────────────────────────
+opencv-python>=4.10.0
+numpy>=2.1.0
+
+# ── DeepFace (ArcFace, RetinaFace, Anti-Spoof) ────────────────
+deepface
+# tensorflow>=2.12.0
+# keras>=2.12.0
+
+# ── FAISS Vector Database ──────────────────────────────────────
+faiss-cpu           # CPU version
+# faiss-gpu         # Uncomment for NVIDIA GPU
+
+# ── Supporting Libraries ───────────────────────────────────────
+pandas
+pillow
+requests
+python-dotenv
+
+# ── Hardware (Raspberry Pi GPIO - Uncomment for Pi deployment) ──
+# RPi.GPIO==0.7.1
+# pyserial==3.5   # For OSDP/RS-485 integration
+
+# ── Optional: Milvus (for million-scale production) ────────────
+# pymilvus==2.3.0
+
+# ── Optional: pgvector (PostgreSQL integration) ────────────────
+# psycopg2-binary==2.9.9
+# pgvector==0.2.3

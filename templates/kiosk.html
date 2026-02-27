@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Lounge Access</title>
+    <!-- MediaPipe Face Detection -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js"
+        crossorigin="anonymous"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #05070A;
+            --green: #10B981;
+            --red: #EF4444;
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #E2E8F0;
+            --accent: #6C63FF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Subtle animated gradient background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(108, 99, 255, 0.08) 0%, transparent 40%);
+            animation: rotateBg 30s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotateBg {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 50px;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            background: rgba(5, 7, 10, 0.6);
+            z-index: 100;
+            position: relative;
+        }
+
+        .logo-text {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6C63FF, #3B82F6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .telemetry {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Hidden for premium look but kept in DOM to avoid breaking JS */
+
+        .kiosk-container {
+            flex: 1;
+            display: flex;
+            position: relative;
+        }
+
+        .video-container {
+            flex: 1;
+            position: relative;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .video-feed {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        .canvas-overlay {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 10;
+        }
+
+        .side-panel {
+            width: 420px;
+            background: rgba(10, 15, 25, 0.4);
+            border-left: 1px solid var(--border);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            z-index: 20;
+            backdrop-filter: blur(30px);
+            background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.02), transparent);
+        }
+
+        .status-box {
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+        }
+
+        .status-box.granted {
+            border-color: rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.05);
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.15);
+            transform: scale(1.02);
+        }
+
+        .status-box.denied {
+            border-color: rgba(239, 68, 68, 0.3);
+            background: rgba(239, 68, 68, 0.05);
+            box-shadow: 0 20px 60px rgba(239, 68, 68, 0.15);
+            transform: scale(1.02);
+        }
+
+        .scan-anim {
+            color: var(--text);
+            margin-top: 14px;
+            font-weight: 300;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: pulseText 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseText {
+
+            0%,
+            100% {
+                opacity: 0.8;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .profile-meta {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="logo-text">
+            <div class="logo-icon">✨</div> Smart Lounge
+        </div>
+        <div class="telemetry">
+            <span id="fpsOut">0</span>
+        </div>
+    </div>
+
+    <div class="kiosk-container">
+        <div class="video-container">
+            <div class="video-wrapper">
+                <video class="video-feed" id="videoElement" autoplay playsinline></video>
+                <canvas class="canvas-overlay" id="canvasElement"></canvas>
+            </div>
+        </div>
+
+        <div class="side-panel">
+            <div class="status-box" id="statusBox">
+                <div style="font-size:3.5rem; margin-bottom:12px; filter:drop-shadow(0 0 10px rgba(255,255,255,0.2));">
+                    🪞</div>
+                <div style="font-weight:600; font-size:1.3rem; margin-bottom:6px; letter-spacing:0.5px;">Ready for Scan
+                </div>
+                <div class="scan-anim">Please look at the camera</div>
+            </div>
+
+            <div style="flex:1;"></div>
+
+            <div
+                style="padding:24px; border:1px solid rgba(255,255,255,0.05); border-radius:16px; font-size:0.85rem; color:var(--muted); line-height:1.7; background:rgba(0,0,0,0.2);">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                    <div
+                        style="width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);">
+                    </div> Seamless Walk-through
+                </div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                    <div
+                        style="width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);">
+                    </div> Biometrics Secured
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden canvas for cropping face to send to backend -->
+    <canvas id="cropCanvas" style="display:none;"></canvas>
+
+    <script>
+        const video = document.getElementById('videoElement');
+        const canvas = document.getElementById('canvasElement');
+        const ctx = canvas.getContext('2d');
+        const cropCanvas = document.getElementById('cropCanvas');
+        const cropCtx = cropCanvas.getContext('2d');
+
+        let lastInferenceTime = 0;
+        let isVerifying = false;
+        let currentBoxLabel = "UNKNOWN";
+        let currentBoxColor = "rgba(255, 255, 255, 0.5)";
+
+        // FPS tracking
+        let frameCount = 0;
+        setInterval(() => {
+            document.getElementById('fpsOut').innerText = frameCount;
+            frameCount = 0;
+        }, 1000);
+
+        function onResults(results) {
+            frameCount++;
+            ctx.save();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (results.detections.length > 0) {
+                const detection = results.detections[0];
+                const bbox = detection.boundingBox;
+
+                // Map 0-1 normalized coordinates to canvas pixels
+                // Note: Since video has scaleX(-1) in CSS, we must invert the X natively on the canvas to match perfectly
+                let x = canvas.width - (bbox.xCenter * canvas.width) - (bbox.width * canvas.width / 2);
+                let y = (bbox.yCenter * canvas.height) - (bbox.height * canvas.height / 2);
+                let w = bbox.width * canvas.width;
+                let h = bbox.height * canvas.height;
+
+                // Draw softer, rounded elegant bracket
+                ctx.strokeStyle = currentBoxColor;
+                ctx.lineWidth = 2;
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
+                ctx.shadowColor = currentBoxColor;
+                ctx.shadowBlur = 15;
+
+                const len = Math.max(15, w * 0.25);
+                ctx.beginPath();
+                // Top Left
+                ctx.moveTo(x, y + len); ctx.arcTo(x, y, x + len, y, 10); ctx.lineTo(x + len, y);
+                // Top Right
+                ctx.moveTo(x + w - len, y); ctx.arcTo(x + w, y, x + w, y + len, 10); ctx.lineTo(x + w, y + len);
+                // Bottom Right
+                ctx.moveTo(x + w, y + h - len); ctx.arcTo(x + w, y + h, x + w - len, y + h, 10); ctx.lineTo(x + w - len, y + h);
+                // Bottom Left
+                ctx.moveTo(x + len, y + h); ctx.arcTo(x, y + h, x, y + h - len, 10); ctx.lineTo(x, y + h - len);
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+
+                // Minimal floating label
+                if (currentBoxLabel !== "UNKNOWN") {
+                    ctx.fillStyle = currentBoxColor;
+                    ctx.font = "500 13px Outfit";
+                    ctx.fillText(currentBoxLabel, x + 5, y - 12);
+                }
+
+                // Trigger Backend Verification every 1 second if a face is present
+                const now = Date.now();
+                if (now - lastInferenceTime > 1000 && !isVerifying) {
+                    lastInferenceTime = now;
+                    verifyFace(bbox, results.detections.length);
+                }
+            } else {
+                // Reset UI if no face
+                if (Date.now() - lastInferenceTime > 2000) {
+                    resetUI();
+                }
+            }
+            ctx.restore();
+        }
+
+        async function verifyFace(bbox, numFaces) {
+            isVerifying = true;
+            currentBoxColor = "#F59E0B"; // Amber processing
+            currentBoxLabel = "VERIFYING...";
+
+            // 1. Crop face from raw video (not mirrored for backend to avoid DeepFace issues)
+            const cropW = bbox.width * video.videoWidth * 1.5;
+            const cropH = bbox.height * video.videoHeight * 1.5;
+            const cropX = Math.max(0, (bbox.xCenter * video.videoWidth) - (cropW / 2));
+            const cropY = Math.max(0, (bbox.yCenter * video.videoHeight) - (cropH / 2));
+
+            cropCanvas.width = cropW;
+            cropCanvas.height = cropH;
+            cropCtx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+
+            const b64 = cropCanvas.toDataURL('image/jpeg', 0.9);
+
+            try {
+                const res = await fetch('/api/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image_b64: b64, num_faces: numFaces })
+                });
+                const data = await res.json();
+
+                if (data.match) {
+                    currentBoxColor = "#10B981";
+                    currentBoxLabel = `GRANTED: ${data.name.split(' ')[0]}`;
+                    // Fetch the latest state to get the dynamic agent actions
+                    const stateRes = await fetch('/api/state');
+                    const stateData = await stateRes.json();
+                    showGranted(data.name, data.confidence, stateData.agent_actions);
+                } else if (data.is_tailgating) {
+                    currentBoxColor = "#EF4444";
+                    currentBoxLabel = "TAILGATING ALERT";
+                    showDenied("TAILGATING DETECTED", "Multiple faces detected. One person allowed at a time.");
+                } else if (data.is_real === false) {
+                    currentBoxColor = "#EF4444";
+                    currentBoxLabel = "SPOOF DETECTED";
+                    showDenied("SPOOF / PRESENTATION ATTACK", "Please present live face.");
+                } else {
+                    currentBoxColor = "#EF4444";
+                    currentBoxLabel = "UNKNOWN";
+                    showDenied("UNRECOGNIZED IDENTITY", "Identity not found in system.");
+                }
+            } catch (e) {
+                console.error(e);
+                currentBoxColor = "#EF4444";
+                currentBoxLabel = "NETWORK ERROR";
+            }
+
+            setTimeout(() => { isVerifying = false; }, 2000); // 2 second cooldown after result
+        }
+
+        function showGranted(name, conf, actions) {
+            const box = document.getElementById('statusBox');
+            box.className = 'status-box granted';
+            let actionHtml = '';
+            if (actions && actions.length > 0) {
+                // Pick the flight status action (usually index 2 if present)
+                const flightAction = actions.find(a => a.includes('Flight')) || 'Processing flight data...';
+                actionHtml = `<div style="margin-top:15px; font-size:0.8rem; color:var(--text); background:rgba(0,0,0,0.5); padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.1);">${flightAction}</div>`;
+            }
+
+            box.innerHTML = `
+            <div style="font-size:3.5rem; margin-bottom:12px; filter:drop-shadow(0 0 15px rgba(16,185,129,0.4)); transform:scale(1.1); transition: transform 0.3s;">✨</div>
+            <div class="profile-name" style="color:var(--green); font-size:1.6rem;">Welcome, ${name}</div>
+            <div class="profile-meta" style="color:rgba(16,185,129,0.8); font-size:0.9rem;">Identity Verified</div>
+            ${actionHtml}
+        `;
+        }
+
+        function showDenied(reason, subtext) {
+            const box = document.getElementById('statusBox');
+            box.className = 'status-box denied';
+
+            // If it is a spoof attack, really emphasize the warning visually
+            const isSpoof = reason.includes("SPOOF");
+            const icon = isSpoof ? "🚨" : "🛑";
+            const title = isSpoof ? "SPOOF DETECTED" : "Access Unavailable";
+            const anim = isSpoof ? "animation: pulseText 1s infinite;" : "";
+
+            box.innerHTML = `
+            <div style="font-size:3.5rem; margin-bottom:12px; filter:drop-shadow(0 0 15px rgba(239,68,68,0.4)); ${anim}">${icon}</div>
+            <div class="profile-name" style="color:var(--red); font-size:1.4rem;">${title}</div>
+            <div class="profile-meta" style="color:rgba(239,68,68,0.8); margin-bottom:6px;">${reason}</div>
+            <div style="font-size:0.75rem; color:var(--text); opacity:0.8;">${subtext}</div>
+        `;
+        }
+
+        function resetUI() {
+            if (currentBoxLabel === "UNKNOWN") return; // Already reset
+            currentBoxLabel = "UNKNOWN";
+            currentBoxColor = "rgba(255, 255, 255, 0.5)";
+            document.getElementById('statusBox').className = 'status-box';
+            document.getElementById('statusBox').innerHTML = `
+            <div style="font-size:3.5rem; margin-bottom:12px; filter:drop-shadow(0 0 10px rgba(255,255,255,0.2));">🪞</div>
+            <div style="font-weight:600; font-size:1.3rem; margin-bottom:6px; letter-spacing:0.5px;">Ready for Scan</div>
+            <div class="scan-anim">Please look at the camera</div>
+        `;
+        }
+
+        // Initialize MediaPipe Face Detection
+        const faceDetection = new FaceDetection({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}` });
+        faceDetection.setOptions({ model: 'short', minDetectionConfidence: 0.5 });
+        faceDetection.onResults(onResults);
+
+        const camera = new Camera(video, {
+            onFrame: async () => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                await faceDetection.send({ image: video });
+            },
+            width: 640, height: 480
+        });
+        camera.start();
+    </script>
+</body>
+
+</html>

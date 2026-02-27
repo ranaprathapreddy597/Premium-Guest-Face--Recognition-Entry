@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lounge Management</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #05070A;
+            --surface: rgba(13, 17, 32, 0.6);
+            --surface2: rgba(30, 40, 64, 0.4);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #6C63FF;
+            --green: #10B981;
+            --red: #EF4444;
+            --text: #E2E8F0;
+            --muted: #94A3B8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        /* Subtle animated gradient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(108, 99, 255, 0.05) 0%, transparent 50%);
+            animation: rotateBg 40s linear infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @keyframes rotateBg {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #6C63FF, #3B82F6);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 0.95rem;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .stat-block {
+            text-align: right;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            backdrop-filter: blur(30px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-header {
+            padding: 24px 30px;
+            border-bottom: 1px solid var(--border);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .card-body {
+            padding: 0;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-row {
+            display: flex;
+            padding: 20px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            align-items: center;
+            gap: 20px;
+            transition: background 0.3s;
+        }
+
+        .user-row:hover {
+            background: var(--surface2);
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .user-meta {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: white;
+        }
+
+        .btn-green {
+            background: var(--green);
+            color: #000;
+        }
+
+        .btn-green:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-red {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-red:hover {
+            background: var(--red);
+            color: white;
+            border-color: var(--red);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .log-row {
+            display: flex;
+            padding: 16px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+
+        .log-row:hover {
+            background: var(--surface2);
+        }
+
+        .log-time {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--muted);
+            font-size: 0.8rem;
+            width: 80px;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge-GRANTED {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-DENIED {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .badge-SPOOF_DETECTED {
+            background: var(--red);
+            color: white;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .badge-TAILGATING {
+            background: #F97316;
+            color: white;
+            box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+        }
+
+        .badge-PENDING {
+            background: rgba(245, 158, 11, 0.1);
+            color: #F59E0B;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .active-card {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .active-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.03);
+            border-color: var(--border);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="logo-section">
+            <div class="logo-icon">✨</div>
+            <div>
+                <h1>Lounge Management</h1>
+                <div class="subtitle">Secure Biometric Approvals & Activity Monitoring</div>
+            </div>
+        </div>
+        <div style="display:flex; gap:40px; align-items:center;">
+            <div class="stat-block">
+                <div class="stat-label">Daily Entries</div>
+                <div class="stat-value" id="statEntries">0</div>
+            </div>
+            <div class="stat-block">
+                <div class="stat-label" style="color:var(--red);">Threats Blocked</div>
+                <div class="stat-value" style="color:var(--red);" id="statSpoofs">0</div>
+            </div>
+            <a href="/admin/logout" style="text-decoration:none; margin-left:20px;">
+                <button class="btn btn-red" style="padding:10px 16px; display:flex; gap:8px; align-items:center;">
+                    <span style="font-size:1.2rem;">🚪</span> Disconnect
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <div class="card">
+            <div class="card-header">
+                <span>Pending Approvals Queue</span>
+                <span class="badge badge-PENDING" id="pendingCount">0</span>
+            </div>
+            <div class="card-body" id="pendingList">
+                <div style="padding:40px; text-align:center; color:var(--muted); font-size:0.95rem;">No pending
+                    registrations.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Recent Activity</div>
+            <div class="card-body" id="auditLog"></div>
+        </div>
+
+        <div class="card" style="grid-column:1/-1;">
+            <div class="card-header">Active & Revoked Profiles</div>
+            <div class="card-body" id="activeList"
+                style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); padding:30px; gap:20px;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchData() {
+            // Fetch Stats + Logs
+            const resState = await fetch('/api/state');
+            const state = await resState.json();
+            document.getElementById('statEntries').innerText = state.total_today;
+            document.getElementById('statSpoofs').innerText = state.spoofs_today;
+
+            document.getElementById('auditLog').innerHTML = state.access_log.map(l => `
+            <div class="log-row">
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <span class="log-time">${l.timestamp_display}</span>
+                    <span style="font-weight:600;">${l.member_name}</span>
+                </div>
+                <span class="badge badge-${l.event_type}">${l.event_type} ${(l.confidence > 0) ? '(' + l.confidence + '%)' : ''}</span>
+            </div>
+        `).join('');
+
+            // Fetch Users
+            const resUsers = await fetch('/api/admin/users');
+            const users = await resUsers.json();
+
+            const pending = users.filter(u => u.status === 'PENDING');
+            document.getElementById('pendingCount').innerText = pending.length;
+
+            if (pending.length > 0) {
+                document.getElementById('pendingList').innerHTML = pending.map(u => `
+                <div class="user-row">
+                    <div class="avatar" style="background:${u.avatar_color}15; border:1px solid ${u.avatar_color}40; color:${u.avatar_color};">${u.avatar}</div>
+                    <div class="user-info">
+                        <div class="user-name">${u.name} <span class="badge badge-PENDING" style="margin-left:8px;font-size:10px;">New</span></div>
+                        <div class="user-meta">${u.tier} · Reg: ${u.created_at}</div>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-green" onclick="updateStatus('${u.id}', 'APPROVED')">Approve</button>
+                        <button class="btn btn-red" onclick="updateStatus('${u.id}', 'REJECTED')">Reject</button>
+                    </div>
+                </div>
+            `).join('');
+            } else {
+                document.getElementById('pendingList').innerHTML = `<div style="padding:40px; text-align:center; color:var(--muted); font-size:0.95rem;">No pending registrations.</div>`;
+            }
+
+            const active = users.filter(u => u.status !== 'PENDING');
+            document.getElementById('activeList').innerHTML = active.map(u => `
+            <div class="active-card">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div style="display:flex; gap:16px;">
+                        <div class="avatar" style="background:${u.avatar_color}15; border:1px solid ${u.avatar_color}40; color:${u.avatar_color}">${u.avatar}</div>
+                        <div>
+                            <div class="user-name">${u.name}</div>
+                            <div class="user-meta" style="margin-top:2px;">ID: ${u.id} · ${u.tier}</div>
+                        </div>
+                    </div>
+                    <span class="badge ${u.status === 'APPROVED' ? 'badge-GRANTED' : 'badge-DENIED'}" style="height:fit-content;">${u.status}</span>
+                </div>
+                <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+                    ${u.status === 'APPROVED' ? `<button class="btn btn-red" style="padding:8px 16px; font-size:0.8rem;" onclick="updateStatus('${u.id}', 'REVOKED')">Revoke Access</button>` : `<button class="btn btn-green" style="padding:8px 16px; font-size:0.8rem; background:transparent; border:1px solid var(--green); color:var(--green);" onclick="updateStatus('${u.id}', 'APPROVED')">Restore Access</button>`}
+                </div>
+            </div>
+        `).join('');
+        }
+
+        async function updateStatus(id, newStatus) {
+            if (!confirm(`Are you sure you want to mark Identity [${id}] as ${newStatus}?`)) return;
+            await fetch(`/api/admin/users/${id}/status`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+            fetchData();
+        }
+
+        fetchData();
+        setInterval(fetchData, 3000);
+    </script>
+</body>
+
+</html>

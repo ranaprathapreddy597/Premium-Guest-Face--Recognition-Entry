@@ -1,0 +1,261 @@
+2026-02-27 18:43:35,735 [WARNING] Your environment has TF_USE_LEGACY_KERAS set to True, but you do not have the tf_keras package installed. You must install it in order to use the legacy tf.keras. Install it via: `pip install tf_keras`
+2026-02-27 18:43:35,932 [INFO] Loading faiss with AVX2 support.
+2026-02-27 18:43:36,508 [INFO] Successfully loaded faiss with AVX2 support.
+2026-02-27 18:43:36,805 [INFO]    Model: ArcFace | Detector: retinaface
+2026-02-27 18:43:36,929 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.157.81.140:5000
+2026-02-27 18:43:36,985 [INFO] [33mPress CTRL+C to quit[0m
+2026-02-27 18:46:21,228 [WARNING] Your environment has TF_USE_LEGACY_KERAS set to True, but you do not have the tf_keras package installed. You must install it in order to use the legacy tf.keras. Install it via: `pip install tf_keras`
+2026-02-27 18:46:21,561 [INFO] Loading faiss with AVX2 support.
+2026-02-27 18:46:21,748 [INFO] Successfully loaded faiss with AVX2 support.
+2026-02-27 18:46:22,030 [INFO]    Model: ArcFace | Detector: retinaface
+2026-02-27 18:46:22,103 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.157.81.140:5000
+2026-02-27 18:46:22,110 [INFO] [33mPress CTRL+C to quit[0m
+2026-02-27 18:48:19,735 [WARNING] From C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+2026-02-27 18:48:25,897 [INFO] ✅ DeepFace loaded successfully
+2026-02-27 18:48:25,904 [INFO] Loading faiss with AVX2 support.
+2026-02-27 18:48:26,069 [INFO] Successfully loaded faiss with AVX2 support.
+2026-02-27 18:48:26,093 [INFO] ✅ FAISS index initialized (dim=512)
+2026-02-27 18:48:26,114 [INFO] 🚀 Premium Guest Face-Recognition Entry System starting...
+2026-02-27 18:48:26,115 [INFO]    DeepFace: ✅ Active
+2026-02-27 18:48:26,117 [INFO]    FAISS: ✅ Active
+2026-02-27 18:48:26,118 [INFO]    Model: ArcFace | Detector: retinaface
+2026-02-27 18:48:26,119 [INFO] ⏳ Building FAISS native dimension index...
+2026-02-27 18:48:26,121 [INFO] FAISS Index built with 0 faces.
+2026-02-27 18:48:26,173 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.157.81.140:5000
+2026-02-27 18:48:26,183 [INFO] [33mPress CTRL+C to quit[0m
+2026-02-27 18:50:12,719 [WARNING] From C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+2026-02-27 18:50:14,562 [INFO] ✅ DeepFace loaded successfully
+2026-02-27 18:50:14,567 [INFO] Loading faiss with AVX2 support.
+2026-02-27 18:50:14,622 [INFO] Successfully loaded faiss with AVX2 support.
+2026-02-27 18:50:14,641 [INFO] ✅ FAISS index initialized (dim=512)
+2026-02-27 18:50:14,651 [INFO] 🚀 Premium Guest Face-Recognition Entry System starting...
+2026-02-27 18:50:14,651 [INFO]    DeepFace: ✅ Active
+2026-02-27 18:50:14,652 [INFO]    FAISS: ✅ Active
+2026-02-27 18:50:14,653 [INFO]    Model: ArcFace | Detector: retinaface
+2026-02-27 18:50:14,654 [INFO] ⏳ Building FAISS native dimension index...
+2026-02-27 18:50:14,655 [INFO] FAISS Index built with 0 faces.
+2026-02-27 18:50:14,729 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.157.81.140:5000
+2026-02-27 18:50:14,732 [INFO] [33mPress CTRL+C to quit[0m
+2026-02-27 18:50:41,046 [ERROR] Exception on / [GET]
+Traceback (most recent call last):
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\OneDrive\Desktop\Premium face recognization\app.py", line 520, in index
+    return render_template('dashboard.html')
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\templating.py", line 151, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: dashboard.html
+2026-02-27 18:50:41,338 [INFO] 127.0.0.1 - - [27/Feb/2026 18:50:41] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2026-02-27 18:50:42,778 [INFO] 127.0.0.1 - - [27/Feb/2026 18:50:42] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-02-27 18:51:09,466 [ERROR] 10.157.81.140 - - [27/Feb/2026 18:51:09] code 400, message Bad request version ('Ù\x9bíÖ+-ÚP%é§p\x11')
+2026-02-27 18:51:09,468 [INFO] 10.157.81.140 - - [27/Feb/2026 18:51:09] "[31m[1m\x16\x03\x01\x07\x00\x01\x00\x06ü\x03\x03qªêdwU'º`0²`çÿ9>õUvä©¯ÄòFúª\x86ô\x19?½ \x14\x8d?\x8f Ù\x9bíÖ+-ÚP%é§p\x11[0m" 400 -
+2026-02-27 18:51:09,485 [ERROR] 10.157.81.140 - - [27/Feb/2026 18:51:09] code 400, message Bad request syntax ("\x16\x03\x01\x06à\x01\x00\x06Ü\x03\x03_ìà\\A%C`'XÜ")
+2026-02-27 18:51:09,498 [INFO] 10.157.81.140 - - [27/Feb/2026 18:51:09] "[31m[1m\x16\x03\x01\x06à\x01\x00\x06Ü\x03\x03_ìà\\A%C`'XÜ[0m" 400 -
+2026-02-27 18:51:11,341 [ERROR] Exception on / [GET]
+Traceback (most recent call last):
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\OneDrive\Desktop\Premium face recognization\app.py", line 520, in index
+    return render_template('dashboard.html')
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\templating.py", line 151, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: dashboard.html
+2026-02-27 18:51:11,381 [INFO] 10.157.81.140 - - [27/Feb/2026 18:51:11] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2026-02-27 18:51:11,715 [INFO] 10.157.81.140 - - [27/Feb/2026 18:51:11] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-02-27 18:51:55,217 [ERROR] Exception on / [GET]
+Traceback (most recent call last):
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\OneDrive\Desktop\Premium face recognization\app.py", line 520, in index
+    return render_template('dashboard.html')
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\templating.py", line 151, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: dashboard.html
+2026-02-27 18:51:55,311 [INFO] 127.0.0.1 - - [27/Feb/2026 18:51:55] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2026-02-27 18:51:55,606 [INFO] 127.0.0.1 - - [27/Feb/2026 18:51:55] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-02-27 18:52:16,721 [ERROR] Exception on / [GET]
+Traceback (most recent call last):
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\OneDrive\Desktop\Premium face recognization\app.py", line 520, in index
+    return render_template('dashboard.html')
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\templating.py", line 151, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: dashboard.html
+2026-02-27 18:52:16,921 [INFO] 10.157.81.140 - - [27/Feb/2026 18:52:16] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2026-02-27 18:52:17,322 [INFO] 10.157.81.140 - - [27/Feb/2026 18:52:17] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-02-27 18:52:44,082 [ERROR] Exception on / [GET]
+Traceback (most recent call last):
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\OneDrive\Desktop\Premium face recognization\app.py", line 520, in index
+    return render_template('dashboard.html')
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\templating.py", line 151, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\jinja2\loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: dashboard.html
+2026-02-27 18:52:44,130 [INFO] 10.157.81.140 - - [27/Feb/2026 18:52:44] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2026-02-27 18:56:04,633 [WARNING] From C:\Users\GSReddy\AppData\Local\Programs\Python\Python313\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+2026-02-27 18:56:07,450 [INFO] ✅ DeepFace loaded successfully
+2026-02-27 18:56:07,460 [INFO] Loading faiss with AVX2 support.
+2026-02-27 18:56:07,531 [INFO] Successfully loaded faiss with AVX2 support.
+2026-02-27 18:56:07,557 [INFO] ✅ FAISS index initialized (dim=512)
+2026-02-27 18:56:07,568 [INFO] 🚀 Premium Guest Face-Recognition Entry System starting...
+2026-02-27 18:56:07,569 [INFO]    DeepFace: ✅ Active
+2026-02-27 18:56:07,576 [INFO]    FAISS: ✅ Active
+2026-02-27 18:56:07,577 [INFO]    Model: ArcFace | Detector: retinaface
+2026-02-27 18:56:07,578 [INFO] ⏳ Building FAISS native dimension index...
+2026-02-27 18:56:07,582 [INFO] FAISS Index built with 0 faces.
+2026-02-27 18:56:07,672 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.157.81.140:5000
+2026-02-27 18:56:07,677 [INFO] [33mPress CTRL+C to quit[0m
+2026-02-27 18:56:17,676 [INFO] 10.157.81.140 - - [27/Feb/2026 18:56:17] "GET / HTTP/1.1" 200 -
+2026-02-27 18:56:37,959 [INFO] 10.157.81.140 - - [27/Feb/2026 18:56:37] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-02-27 19:06:37,595 [INFO] 127.0.0.1 - - [27/Feb/2026 19:06:37] "GET / HTTP/1.1" 200 -
+2026-02-27 19:07:02,306 [INFO] 127.0.0.1 - - [27/Feb/2026 19:07:02] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -

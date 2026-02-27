@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoungeAI #50 — Biometric Entry System</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #080B12;
+      --surface: rgba(13, 17, 32, 0.7);
+      --surface2: rgba(30, 40, 64, 0.5);
+      --border: rgba(59, 130, 246, 0.3);
+      --accent: #3B82F6;
+      --accent2: #6366F1;
+      --green: #10B981;
+      --red: #EF4444;
+      --amber: #F59E0B;
+      --text: #E2E8F0;
+      --muted: #94A3B8;
+      --platinum: #C0C9E0;
+      --gold: #F59E0B;
+      --silver: #94A3B8;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 28px;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(8, 11, 18, 0.85);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+    }
+
+    .logo-sub {
+      font-size: 0.65rem;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border: 1px solid;
+      transition: all 0.3s;
+    }
+
+    .status-pill.online {
+      border-color: var(--border);
+      color: var(--muted);
+      background: var(--surface2);
+    }
+
+    .status-pill.open {
+      border-color: var(--green);
+      color: var(--green);
+      background: rgba(16, 185, 129, 0.15);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .status-pill.alert {
+      border-color: var(--red);
+      color: var(--red);
+      background: rgba(239, 68, 68, 0.15);
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+      animation: pulse-red 1s infinite;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    @keyframes pulse-red {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0.5
+      }
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      grid-template-rows: auto auto;
+      gap: 20px;
+      padding: 20px 28px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .stats-row {
+      grid-column: 1/-1;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent-color, var(--accent));
+    }
+
+    .stat-label {
+      font-size: 0.65rem;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    .camera-section {
+      grid-row: 2;
+    }
+
+    .camera-wrap {
+      position: relative;
+      background: #000;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .live-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+
+    .bounding-box-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .scanner-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(59, 130, 246, 0.1);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+      backdrop-filter: blur(3px);
+    }
+
+    .scanner-line {
+      width: 100%;
+      height: 3px;
+      background: var(--green);
+      box-shadow: 0 0 15px var(--green);
+      position: absolute;
+      top: 0;
+      animation: scanAnim 1.5s infinite alternate ease-in-out;
+    }
+
+    @keyframes scanAnim {
+      from {
+        top: 0%;
+      }
+
+      to {
+        top: 98%;
+      }
+    }
+
+    .camera-controls {
+      padding: 15px 20px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: var(--surface2);
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: white;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+    }
+
+    .btn-verify {
+      background: var(--green);
+      color: #000;
+      font-size: 1rem;
+      padding: 12px 24px;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 1px;
+      flex: 1;
+    }
+
+    .btn-verify:hover {
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--red);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-success {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--green);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      grid-row: 2;
+    }
+
+    .recognition-card {
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.4s;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .recognition-card.granted {
+      border-color: rgba(16, 185, 129, 0.5);
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.1);
+    }
+
+    .recognition-card.alert {
+      border-color: rgba(239, 68, 68, 0.5);
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.1);
+    }
+
+    .recognition-header {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .member-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .member-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .tier-badge {
+      font-size: 0.65rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+    }
+
+    .tier-PLATINUM {
+      background: rgba(192, 201, 224, 0.15);
+      color: var(--platinum);
+      border: 1px solid rgba(192, 201, 224, 0.3);
+    }
+
+    .tier-GOLD {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--gold);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .tier-SILVER {
+      background: rgba(148, 163, 184, 0.15);
+      color: var(--silver);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .recognition-body {
+      padding: 16px 20px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 0.82rem;
+    }
+
+    .info-label {
+      color: var(--muted);
+    }
+
+    .info-value {
+      font-weight: 500;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+    }
+
+    .flight-card {
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .flight-header {
+      padding: 8px 12px;
+      background: var(--surface2);
+      font-size: 0.68rem;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 1px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .flight-body {
+      padding: 12px;
+    }
+
+    .flight-number {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .flight-route {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .flight-time {
+      font-size: 1.4rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+    }
+
+    .flight-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .flight-status.ontime {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--green);
+    }
+
+    .flight-status.delayed {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--red);
+    }
+
+    .agent-card {
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .agent-action {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+      display: flex;
+      gap: 8px;
+      animation: slideIn 0.4s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(20px);
+        opacity: 0
+      }
+
+      to {
+        transform: none;
+        opacity: 1
+      }
+    }
+
+    .log-entry {
+      display: grid;
+      grid-template-columns: 70px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 0.78rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .log-time {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .log-name {
+      font-weight: 500;
+    }
+
+    .log-sub {
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+
+    .event-badge {
+      font-size: 0.62rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .event-GRANTED {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--green);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .event-DENIED {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--red);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .event-SPOOF_DETECTED {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--red);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+    }
+
+    .event-ENROLLMENT {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .event-REVOKED {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--red);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .members-section {
+      grid-column: 1/-1;
+      margin-top: 4px;
+    }
+
+    .members-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+      padding: 16px 20px;
+    }
+
+    .member-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      background: var(--surface2);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      transition: all 0.2s;
+    }
+
+    .member-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .avatar-sm {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .member-info-block {
+      flex: 1;
+    }
+
+    .member-card-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .member-card-ff {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 2px;
+    }
+
+    .member-prefs {
+      margin-top: 8px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .pref-chip {
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      color: var(--muted);
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab {
+      padding: 10px 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .empty-state {
+      padding: 30px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .empty-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .scroll-area {
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 480px;
+      max-width: 95vw;
+      padding: 28px;
+      transform: scale(0.95);
+      transition: transform 0.3s;
+    }
+
+    .modal-overlay.open .modal {
+      transform: scale(1);
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Gate Visuals */
+    .gate-indicator {
+      position: relative;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gate-visual {
+      width: 60px;
+      height: 80px;
+      border: 3px solid var(--muted);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: all 0.4s;
+    }
+
+    .gate-visual.open {
+      border-color: var(--green);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .gate-visual.alert {
+      border-color: var(--red);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0)
+      }
+
+      20% {
+        transform: translateX(-4px)
+      }
+
+      40% {
+        transform: translateX(4px)
+      }
+
+      60% {
+        transform: translateX(-4px)
+      }
+
+      80% {
+        transform: translateX(4px)
+      }
+    }
+
+    .gate-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .spoof-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      pointer-events: none;
+      border: 4px solid var(--red);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .spoof-overlay.active {
+      animation: spoof-flash 0.5s ease 3;
+    }
+
+    @keyframes spoof-flash {
+
+      0%,
+      100% {
+        opacity: 0.3
+      }
+
+      50% {
+        opacity: 1
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="spoof-overlay" id="spoofOverlay"></div>
+
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">👁</div>
+      <div>
+        <div class="logo-text">LoungeAI</div>
+        <div class="logo-sub">Airport / Lounge #50 · Biometric Entry</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="status-pill online" id="gatePill"><span class="dot"></span><span id="gateText">GATE LOCKED</span>
+      </div>
+      <button class="btn btn-primary" onclick="openEnrollModal()">+ Enroll Identity</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="stats-row">
+      <div class="stat-card" style="--accent-color:var(--green)">
+        <div class="stat-label">Entries Today</div>
+        <div class="stat-value" id="totalToday">0</div>
+      </div>
+      <div class="stat-card" style="--accent-color:var(--accent)">
+        <div class="stat-label">Active Members</div>
+        <div class="stat-value" id="activeMembers">0</div>
+      </div>
+      <div class="stat-card" style="--accent-color:var(--red)">
+        <div class="stat-label">Threats Blocked</div>
+        <div class="stat-value" id="spoofCount">0</div>
+      </div>
+      <div class="stat-card" style="--accent-color:var(--amber)">
+        <div class="stat-label">AI Engine</div>
+        <div class="stat-value" style="font-size:1.5rem;padding-top:6px">ArcFace</div>
+      </div>
+      <div class="stat-card" style="--accent-color:var(--accent2)">
+        <div class="stat-label">Detector Pipeline</div>
+        <div class="stat-value" style="font-size:1.5rem;padding-top:6px">OpenCV + MTCNN</div>
+      </div>
+    </div>
+
+    <div class="card camera-section">
+      <div class="card-header">
+        <span class="card-title">🎥 Edge Vision Array</span>
+        <span style="color:var(--green); font-size:12px;">● Kiosk Active</span>
+      </div>
+
+      <div class="camera-wrap">
+        <video id="liveVideo" class="live-video" autoplay playsinline muted></video>
+        <canvas id="boundingBoxCanvas" class="bounding-box-canvas"></canvas>
+
+        <div class="scanner-overlay" id="scannerOverlay">
+          <div class="scanner-line"></div>
+          <div
+            style="background:rgba(0,0,0,0.7); padding:8px 16px; border-radius:20px; font-family:'JetBrains Mono'; font-size:14px; color:var(--green);">
+            VERIFYING IDENTITY VIA MTCNN...</div>
+        </div>
+        <div id="telemetryOverlay"
+          style="position:absolute; top:10px; left:10px; z-index:20; font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--green); background:rgba(0,0,0,0.6); border-radius:4px; padding:4px 8px;">
+          FPS: -- | LATENCY: --ms | ENGINE: OpenCV-DNN
+        </div>
+      </div>
+
+      <div class="camera-controls">
+        <button class="btn btn-verify" id="btnVerify" onclick="manualVerify()">Verify Guest</button>
+        <button class="btn btn-success" onclick="simulateAPI('entry')">✓ Demo Entry</button>
+        <button class="btn btn-danger" onclick="simulateAPI('spoof')">⚠ Demo Spoof</button>
+        <canvas id="hiddenCanvas" style="display:none;"></canvas>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🚪 Gate Control</span>
+          <span class="status-pill online" id="gateStatusBadge"><span class="dot"></span>CLOSED</span>
+        </div>
+        <div class="gate-indicator">
+          <div class="gate-visual" id="gateVisual">🔒</div>
+          <div class="gate-label" id="gateLabel">ACCESS LOCKED</div>
+        </div>
+      </div>
+
+      <div class="card recognition-card" id="recognitionCard">
+        <div class="card-header">
+          <span class="card-title">👤 Current Guest Profile</span>
+        </div>
+        <div id="recognitionBody">
+          <div class="empty-state">
+            <div class="empty-icon">🔍</div>Awaiting verification trigger...
+          </div>
+        </div>
+      </div>
+
+      <div class="card agent-card">
+        <div class="card-header">
+          <span class="card-title">🤖 Agent Orchestrator</span>
+          <span style="font-size:0.65rem;color:var(--muted)">Auto-dispatched</span>
+        </div>
+        <div id="agentActions">
+          <div class="empty-state">
+            <div class="empty-icon">⚡</div>Multi-agent pipeline idle...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card members-section">
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('members')">Member Database</div>
+        <div class="tab" onclick="switchTab('logs')">Immutable Audit Log</div>
+        <div class="tab" onclick="switchTab('security')">Security Protocol</div>
+      </div>
+
+      <div class="tab-content active" id="tab-members">
+        <div
+          style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:0.82rem;color:var(--muted)"><span id="membersCountLabel">0</span> enrolled
+            vectors</span>
+        </div>
+        <div class="members-grid" id="membersGrid"></div>
+      </div>
+
+      <div class="tab-content" id="tab-logs">
+        <div class="scroll-area" id="accessLogContainer">
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>No access events yet.
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tab-security">
+        <div style="padding:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+          <div style="border:1px solid var(--border);border-radius:12px;padding:16px">
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;margin-bottom:12px">🔬 Biometric
+              Pipeline</div>
+            <div style="font-size:0.8rem;color:var(--muted);line-height:1.8">
+              <div>Detector: <b style="color:var(--text)">OpenCV (Track) + MTCNN (Verify)</b></div>
+              <div>Model: <b style="color:var(--text)">ArcFace (512-dim)</b></div>
+              <div>Threshold: <b style="color:var(--text)">0.45 (Strict)</b></div>
+              <div>Distance: <b style="color:var(--text)">Cosine Similarity</b></div>
+            </div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:12px;padding:16px">
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;margin-bottom:12px">🔐 Hardware &
+              Network</div>
+            <div style="font-size:0.8rem;color:var(--muted);line-height:1.8">
+              <div>Protocol: <b style="color:var(--text)">OSDP v2 + AES-128</b></div>
+              <div>Edge: <b style="color:var(--text)">Local Host Processing</b></div>
+              <div>Uptime SLA: <b style="color:var(--green)">99.99%</b></div>
+            </div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:12px;padding:16px">
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;margin-bottom:12px">⚖️ DPDP Act
+              2023</div>
+            <div style="font-size:0.8rem;color:var(--muted);line-height:1.8">
+              <div>Storage: <b style="color:var(--green)">Vector Only</b></div>
+              <div>Erasure: <b style="color:var(--green)">1-Click Hard Delete</b></div>
+              <div>Audit: <b style="color:var(--green)">Immutable Crypto Log</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="enrollModal">
+    <div class="modal">
+      <div class="modal-title">Enroll New Identity</div>
+
+      <div style="position:relative; margin-bottom:15px; border-radius:8px; overflow:hidden;">
+        <video id="enrollVideo" autoplay playsinline muted
+          style="width:100%; height:200px; object-fit:cover; transform:scaleX(-1); background:#000;"></video>
+        <img id="enrollPreview" style="display:none; width:100%; height:200px; object-fit:cover; transform:scaleX(-1);">
+        <button class="btn btn-primary"
+          style="position:absolute; bottom:10px; right:10px; padding:6px 12px; font-size:12px;"
+          onclick="captureForEnroll()">📸 Scan Face</button>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="eName"
+            type="text" placeholder="e.g. Rana Prathap"></div>
+        <div class="form-group"><label class="form-label">Tier *</label><select class="form-input" id="eTier">
+            <option value="PLATINUM">Platinum</option>
+            <option value="GOLD">Gold</option>
+            <option value="SILVER">Silver</option>
+          </select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Airline</label><input class="form-input" id="eAirline"
+            placeholder="Air India"></div>
+        <div class="form-group"><label class="form-label">FF Number</label><input class="form-input" id="eFF"
+            placeholder="AI-1234567"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Preferred Drink</label><input class="form-input" id="eDrink"
+            placeholder="Espresso"></div>
+        <div class="form-group"><label class="form-label">Seat Pref</label><select class="form-input" id="eSeat">
+            <option>Window</option>
+            <option>Aisle</option>
+            <option>Any</option>
+          </select></div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn btn-ghost" onclick="closeEnrollModal()">Cancel</button>
+        <button class="btn btn-primary" id="btnSubmitEnroll" onclick="submitEnrollment()">Extract & Enroll →</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ─── CAMERA INITIALIZATION ───
+    const liveVideo = document.getElementById('liveVideo');
+    const hiddenCanvas = document.getElementById('hiddenCanvas');
+    const hiddenCtx = hiddenCanvas.getContext('2d');
+    const boxCanvas = document.getElementById('boundingBoxCanvas');
+    const boxCtx = boxCanvas.getContext('2d');
+    let currentEnrollB64 = null;
+
+    async function initCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+        liveVideo.srcObject = stream;
+        document.getElementById('enrollVideo').srcObject = stream;
+
+        liveVideo.onloadedmetadata = () => {
+          hiddenCanvas.width = liveVideo.videoWidth;
+          hiddenCanvas.height = liveVideo.videoHeight;
+          boxCanvas.width = liveVideo.videoWidth;
+          boxCanvas.height = liveVideo.videoHeight;
+          scanFrameLoop(); // Start continuous bounding box loop
+        };
+      } catch (err) { alert("Camera access required!"); }
+    }
+    initCamera();
+
+    // ─── CONTINUOUS BOUNDING BOX LOOP ───
+    let scanLastTime = Date.now();
+    async function scanFrameLoop() {
+      if (!liveVideo.videoWidth) {
+        requestAnimationFrame(scanFrameLoop);
+        return;
+      }
+
+      const now = Date.now();
+      const fps = Math.round(1000 / (now - scanLastTime + 1));
+      scanLastTime = now;
+
+      hiddenCtx.drawImage(liveVideo, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+      const b64 = hiddenCanvas.toDataURL('image/jpeg', 0.8);
+
+      const startReq = Date.now();
+      try {
+        const res = await fetch('/api/recognize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image_b64: b64 })
+        });
+        const data = await res.json();
+        const latency = Date.now() - startReq;
+
+        document.getElementById('telemetryOverlay').innerText = `FPS: ${Math.min(fps, 30)} | LATENCY: ${latency}ms | DETECTOR: FAST-TRACK`;
+
+        if (data.success && data.faces) drawBoundingBoxes(data.faces);
+        else boxCtx.clearRect(0, 0, boxCanvas.width, boxCanvas.height);
+      } catch (e) { /* Ignore dropped frames */ }
+
+      setTimeout(scanFrameLoop, 200);
+    }
+
+    let spoofCooldown = false;
+
+    function drawBoundingBoxes(faces) {
+      boxCtx.clearRect(0, 0, boxCanvas.width, boxCanvas.height);
+
+      faces.forEach(face => {
+        let { x, y, w, h } = face.box;
+
+        // Compensate for the mirrored video by drawing mirrored coordinates
+        x = boxCanvas.width - x - w;
+
+        let color = face.match ? '#10B981' : '#EF4444';
+        let label = face.match ? `GRANTED: ${face.name.split(' ')[0]} (${(face.confidence * 100).toFixed(0)}%)` : `DENIED: Unknown`;
+
+        if (face.is_real === false) {
+          color = '#F59E0B'; // Amber orange for Spoof
+          label = 'SPOOF DETECTED';
+          if (!spoofCooldown) {
+            spoofCooldown = true;
+            setTimeout(() => spoofCooldown = false, 5000);
+            simulateAPI('spoof'); // Triggers the alarm natively
+          }
+        }
+
+        // Draw premium sci-fi targeting brackets
+        boxCtx.lineWidth = 3;
+        boxCtx.strokeStyle = color;
+        boxCtx.shadowColor = color;
+        boxCtx.shadowBlur = 10;
+
+        const len = Math.floor(w * 0.2) + 5; // Bracket length relative to face width
+
+        boxCtx.beginPath();
+        // Top Left
+        boxCtx.moveTo(x, y + len);
+        boxCtx.lineTo(x, y);
+        boxCtx.lineTo(x + len, y);
+        // Top Right
+        boxCtx.moveTo(x + w - len, y);
+        boxCtx.lineTo(x + w, y);
+        boxCtx.lineTo(x + w, y + len);
+        // Bottom Right
+        boxCtx.moveTo(x + w, y + h - len);
+        boxCtx.lineTo(x + w, y + h);
+        boxCtx.lineTo(x + w - len, y + h);
+        // Bottom Left
+        boxCtx.moveTo(x + len, y + h);
+        boxCtx.lineTo(x, y + h);
+        boxCtx.lineTo(x, y + h - len);
+        boxCtx.stroke();
+
+        boxCtx.shadowBlur = 0; // reset for text
+
+        boxCtx.fillStyle = color;
+        boxCtx.font = "bold 13px JetBrains Mono";
+        const textWidth = boxCtx.measureText(label).width;
+        boxCtx.fillRect(x, y - 24, textWidth + 10, 22);
+
+        boxCtx.fillStyle = face.match ? "#000000" : "#ffffff";
+        boxCtx.fillText(label, x + 5, y - 8);
+      });
+    }
+
+    // ─── MANUAL VERIFY (TRIGGERS GATE & AGENTS) ───
+    async function manualVerify() {
+      const btn = document.getElementById('btnVerify');
+      const overlay = document.getElementById('scannerOverlay');
+
+      btn.disabled = true;
+      btn.innerText = "Extracting Vector...";
+      overlay.style.display = "flex";
+
+      hiddenCtx.drawImage(liveVideo, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+      const b64 = hiddenCanvas.toDataURL('image/jpeg', 0.8);
+
+      try {
+        const res = await fetch('/api/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image_b64: b64 })
+        });
+        const data = await res.json();
+
+        overlay.style.display = "none";
+        if (!data.match) showAccessDenied(data.message);
+        fetchState();
+      } catch (e) {
+        overlay.style.display = "none";
+        alert("Verification failed due to server error");
+      }
+
+      btn.disabled = false;
+      btn.innerText = "Verify Guest";
+    }
+
+    // ─── DEMO BUTTONS ───
+    async function simulateAPI(type) {
+      await fetch('/api/simulate/recognition', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ spoof: type === 'spoof' })
+      });
+      fetchState();
+    }
+
+    // ─── STATE SYNCING & UI UPDATES ───
+    let currentGateStatus = 'CLOSED';
+
+    async function fetchState() {
+      const resS = await fetch('/api/state');
+      const state = await resS.json();
+
+      document.getElementById('totalToday').innerText = state.total_today;
+      document.getElementById('spoofCount').innerText = state.spoofs_today;
+      document.getElementById('activeMembers').innerText = state.active_members;
+
+      // Gate UI
+      if (state.gate_status !== currentGateStatus) {
+        currentGateStatus = state.gate_status;
+        setGateUI(state.gate_status);
+
+        if (state.gate_status === 'OPEN' && state.last_recognition) {
+          updateRecognitionCard(state.last_recognition, state.last_emotion);
+          updateAgentActions(state.agent_actions);
+        } else if (state.gate_status === 'ALERT') {
+          showAccessDenied("SPOOF / PRESENTATION ATTACK DETECTED");
+        } else if (state.gate_status === 'CLOSED') {
+          resetRecognitionCard();
+        }
+      }
+
+      // Logs List
+      const evColors = { GRANTED: 'event-GRANTED', DENIED: 'event-DENIED', SPOOF_DETECTED: 'event-SPOOF_DETECTED', ENROLLMENT: 'event-ENROLLMENT', REVOKED: 'event-REVOKED' };
+      document.getElementById('accessLogContainer').innerHTML = state.access_log.map(l => `
+        <div class="log-entry">
+            <div class="log-time">${l.timestamp_display}</div>
+            <div>
+                <div class="log-name">${l.member_name}</div>
+                <div class="log-sub">${l.tier}</div>
+            </div>
+            <span class="event-badge ${evColors[l.event_type] || ''}">${l.event_type}</span>
+        </div>`).join('');
+
+      // Members Grid
+      const resM = await fetch('/api/members');
+      const members = await resM.json();
+      document.getElementById('membersCountLabel').textContent = members.length;
+      document.getElementById('membersGrid').innerHTML = members.map(m => `
+        <div class="member-card">
+            <div class="avatar-sm" style="background:${m.avatar_color}20;color:${m.avatar_color};border:2px solid ${m.avatar_color}40">${m.avatar}</div>
+            <div class="member-info-block">
+                <div class="member-card-name">${m.name}</div>
+                <div style="margin-top:3px"><span class="tier-badge tier-${m.tier}">${m.tier}</span></div>
+                <div class="member-card-ff">${m.ff}</div>
+                <div class="member-prefs">
+                    <span class="pref-chip">☕ ${m.preferences.drink}</span>
+                    <span class="pref-chip">💺 ${m.preferences.seat}</span>
+                </div>
+                <div style="margin-top:8px;display:flex;gap:6px">
+                    <button class="btn-success btn" style="font-size:0.65rem;padding:3px 8px;" onclick="fetch('/api/simulate/recognition', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({member_id: '${m.id}'})})">▶ Demo</button>
+                    <button onclick="revokeIdentity('${m.id}')" style="font-size:0.65rem;padding:3px 8px;background:transparent;border:1px solid rgba(239,68,68,0.3);color:rgba(239,68,68,0.6);border-radius:6px;cursor:pointer">🗑 Revoke</button>
+                </div>
+            </div>
+        </div>`).join('');
+    }
+    setInterval(fetchState, 1500);
+    fetchState();
+
+    // ─── UI HELPERS ───
+    function setGateUI(status) {
+      const pill = document.getElementById('gatePill');
+      const badge = document.getElementById('gateStatusBadge');
+      const visual = document.getElementById('gateVisual');
+      const label = document.getElementById('gateLabel');
+      const spoofOverlay = document.getElementById('spoofOverlay');
+
+      visual.className = 'gate-visual';
+      pill.className = 'status-pill';
+      spoofOverlay.classList.remove('active');
+
+      if (status === 'OPEN') {
+        pill.classList.add('open'); pill.innerHTML = '<span class="dot"></span>GATE OPEN';
+        badge.className = 'status-pill open'; badge.innerHTML = '<span class="dot"></span>OPEN';
+        visual.textContent = '🔓'; visual.classList.add('open');
+        label.textContent = 'ACCESS GRANTED'; label.style.color = 'var(--green)';
+      } else if (status === 'ALERT') {
+        pill.classList.add('alert'); pill.innerHTML = '<span class="dot"></span>SECURITY ALERT';
+        badge.className = 'status-pill alert'; badge.innerHTML = '<span class="dot"></span>ALERT';
+        visual.textContent = '🚨'; visual.classList.add('alert');
+        label.textContent = 'SPOOF DETECTED'; label.style.color = 'var(--red)';
+        spoofOverlay.classList.add('active');
+      } else {
+        pill.classList.add('online'); pill.innerHTML = '<span class="dot"></span>GATE LOCKED';
+        badge.className = 'status-pill online'; badge.innerHTML = '<span class="dot"></span>CLOSED';
+        visual.textContent = '🔒'; label.textContent = 'ACCESS LOCKED'; label.style.color = '';
+      }
+    }
+
+    function updateRecognitionCard(member, emotion) {
+      const card = document.getElementById('recognitionCard');
+      card.className = 'card recognition-card granted';
+      const emotionIcons = { happy: '😊', neutral: '😐', angry: '😠', sad: '😢', surprised: '😲', fear: '😨' };
+      const f = member.flights_today && member.flights_today.length > 0 ? member.flights_today[0] : null;
+      const delayed = f?.status?.includes('Delayed');
+
+      document.getElementById('recognitionBody').innerHTML = `
+        <div class="recognition-header">
+            <div class="member-avatar" style="background:${member.avatar_color}20;border:2px solid ${member.avatar_color}60;color:${member.avatar_color}">${member.avatar}</div>
+            <div>
+                <div class="member-name">${member.name}</div>
+                <div style="display:flex;gap:6px;margin-top:4px;align-items:center">
+                    <span class="tier-badge tier-${member.tier}">${member.tier}</span>
+                    <span style="font-size:0.72rem;padding:2px 8px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:4px">${emotionIcons[emotion] || '😐'} ${emotion}</span>
+                </div>
+            </div>
+        </div>
+        <div class="recognition-body">
+            <div class="info-row"><span class="info-label">Airline</span><span class="info-value">${member.airline}</span></div>
+            <div class="info-row"><span class="info-label">Welcome Drink</span><span class="info-value">☕ ${member.preferences.drink}</span></div>
+            <div class="info-row"><span class="info-label">Seat Pref</span><span class="info-value">${member.preferences.seat}</span></div>
+            ${f ? `<div class="flight-card">
+                <div class="flight-header">🛫 NEXT FLIGHT</div>
+                <div class="flight-body">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                        <div><div class="flight-number">${f.number}</div><div class="flight-route">→ ${f.dest} · Gate ${f.gate}</div></div>
+                        <div style="text-align:right"><div class="flight-time">${f.time}</div><span class="flight-status ${delayed ? 'delayed' : 'ontime'}">${f.status}</span></div>
+                    </div>
+                </div>
+            </div>` : ''}
+        </div>`;
+    }
+
+    function showAccessDenied(message) {
+      const card = document.getElementById('recognitionCard');
+      card.className = 'card recognition-card alert';
+      document.getElementById('recognitionBody').innerHTML = `
+        <div style="padding:20px;text-align:center">
+            <div style="font-size:2.5rem;margin-bottom:8px">🚨</div>
+            <div style="font-family:'Syne',sans-serif;font-weight:800;color:var(--red);font-size:1.1rem">ACCESS DENIED</div>
+            <div style="font-size:0.8rem;color:var(--muted);margin-top:6px">${message}</div>
+        </div>`;
+      document.getElementById('agentActions').innerHTML = `<div class="agent-action" style="color:var(--red)"><span>🚨 SECURITY ALERT LOGGED</span></div>`;
+      setTimeout(resetRecognitionCard, 4000);
+    }
+
+    function resetRecognitionCard() {
+      document.getElementById('recognitionCard').className = 'card recognition-card';
+      document.getElementById('recognitionBody').innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div>Awaiting verification trigger...</div>`;
+      document.getElementById('agentActions').innerHTML = `<div class="empty-state"><div class="empty-icon">⚡</div>Multi-agent pipeline idle...</div>`;
+    }
+
+    function updateAgentActions(actionsArray) {
+      if (!actionsArray || actionsArray.length === 0) return;
+      document.getElementById('agentActions').innerHTML = actionsArray.map((a, i) =>
+        `<div class="agent-action" style="animation-delay:${i * 0.1}s"><span>${a}</span></div>`
+      ).join('');
+    }
+
+    // ─── TABS ───
+    function switchTab(name) {
+      document.querySelectorAll('.tab').forEach((t, i) => { t.classList.toggle('active', ['members', 'logs', 'security'][i] === name); });
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById(`tab-${name}`).classList.add('active');
+    }
+
+    // ─── ENROLLMENT ───
+    function openEnrollModal() {
+      document.getElementById('enrollModal').classList.add('open');
+      document.getElementById('enrollVideo').style.display = 'block';
+      document.getElementById('enrollPreview').style.display = 'none';
+      currentEnrollB64 = null;
+    }
+    function closeEnrollModal() { document.getElementById('enrollModal').classList.remove('open'); }
+
+    function captureForEnroll() {
+      hiddenCtx.drawImage(document.getElementById('enrollVideo'), 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+      currentEnrollB64 = hiddenCanvas.toDataURL('image/jpeg', 0.9);
+      document.getElementById('enrollVideo').style.display = 'none';
+      document.getElementById('enrollPreview').src = currentEnrollB64;
+      document.getElementById('enrollPreview').style.display = 'block';
+    }
+
+    async function submitEnrollment() {
+      const name = document.getElementById('eName').value;
+      if (!name || !currentEnrollB64) return alert("Photo and Name are required.");
+
+      const btn = document.getElementById('btnSubmitEnroll');
+      btn.innerText = "Extracting Vector..."; btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/members/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: name, tier: document.getElementById('eTier').value,
+            airline: document.getElementById('eAirline').value,
+            ff: document.getElementById('eFF').value,
+            drink: document.getElementById('eDrink').value,
+            seat: document.getElementById('eSeat').value,
+            image_b64: currentEnrollB64
+          })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          closeEnrollModal();
+          fetchState();
+          ['eName', 'eAirline', 'eFF', 'eDrink'].forEach(i => document.getElementById(i).value = '');
+        } else {
+          alert(data.message);
+          document.getElementById('enrollVideo').style.display = 'block';
+          document.getElementById('enrollPreview').style.display = 'none';
+        }
+      } catch (e) { alert("Server Error."); }
+
+      btn.innerText = "Extract & Enroll →"; btn.disabled = false;
+    }
+
+    async function revokeIdentity(id) {
+      if (confirm("DPDP Act: Permanently delete member vector?")) {
+        await fetch(`/api/members/${id}/revoke`, { method: 'POST' });
+        fetchState();
+      }
+    }
+  </script>
+</body>
+
+</html>
